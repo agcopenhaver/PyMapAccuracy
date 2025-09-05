@@ -41,4 +41,5 @@ repos:
     hooks:
       - id: mypy
         additional_dependencies: [pandas-stubs, types-requests]
-        args: [--ignore-missing-imports]
+        args: [--explicit-package-bases]
+        files: ^src/

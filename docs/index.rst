@@ -15,10 +15,10 @@ Key Features
 ------------
 
 * **Comprehensive Accuracy Metrics**: Overall accuracy, user's accuracy, producer's accuracy, and area proportions
-* **Statistical Rigor**: Standard error estimates and confidence intervals for all metrics  
+* **Statistical Rigor**: Standard error estimates and confidence intervals for all metrics
 * **Flexible Sampling Designs**: Support for stratified random sampling where strata differ from map classes
 * **Two Estimator Methods**:
-  
+
   * **Stehman (2014)**: When sampling strata differ from map classes (e.g., geographic regions)
   * **Olofsson et al. (2014)**: When map classes serve as sampling strata
 
@@ -47,13 +47,13 @@ Stehman Estimator (Strata ≠ Map Classes)
 
    # Example: Administrative regions as strata, land cover as classes
    strata = ['region_A', 'region_A', 'region_B', 'region_B', 'region_C']
-   reference = ['forest', 'grassland', 'water', 'forest', 'urban']  
+   reference = ['forest', 'grassland', 'water', 'forest', 'urban']
    map_pred = ['forest', 'forest', 'water', 'grassland', 'urban']
 
    # Area of each administrative region
    stratum_areas = {
        'region_A': 10000,
-       'region_B': 8000, 
+       'region_B': 8000,
        'region_C': 12000
    }
 
@@ -87,7 +87,7 @@ Olofsson Estimator (Map Classes = Strata)
    :caption: Contents:
 
    installation
-   quickstart  
+   quickstart
    api
    examples
    theory
