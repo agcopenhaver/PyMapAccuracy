@@ -1,5 +1,5 @@
 import warnings
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -7,13 +7,13 @@ from scipy.stats import norm
 
 
 def stehman2014(
-    s: Union[List[Any], pd.Series],
-    r: Union[List[Any], pd.Series],
-    m: Union[List[Any], pd.Series],
-    Nh_strata: Dict[Any, Union[int, float]],
+    s: list[Any] | pd.Series,
+    r: list[Any] | pd.Series,
+    m: list[Any] | pd.Series,
+    Nh_strata: dict[Any, int | float],
     margins: bool = True,
-    order: Optional[List[Any]] = None,
-) -> Dict[str, Any]:
+    order: list[Any] | None = None,
+) -> dict[str, Any]:
     """
     Estimate thematic map accuracy and area under stratified random sampling where
     sampling strata differ from map classes.
@@ -144,11 +144,11 @@ def stehman2014(
         raise ValueError(
             "Nh_strata must be a dictionary with stratum labels as keys and areas as values."
         )
-    if not all(isinstance(k, (str, int, float)) for k in Nh_strata.keys()):
+    if not all(isinstance(k, str | int | float) for k in Nh_strata.keys()):
         raise ValueError(
             "Nh_strata keys must be valid stratum labels (str, int, or float)."
         )
-    if not all(isinstance(v, (int, float)) and v >= 0 for v in Nh_strata.values()):
+    if not all(isinstance(v, int | float) and v >= 0 for v in Nh_strata.values()):
         raise ValueError(
             "Nh_strata values must be non-negative numbers representing stratum areas."
         )
@@ -245,7 +245,7 @@ def stehman2014(
         return float((sample[yu_col] / sample["incl"]).sum() / N)
 
     def eq25(
-        Nh_dict: Dict[Any, float], nh_series: pd.Series, var_series: pd.Series
+        Nh_dict: dict[Any, float], nh_series: pd.Series, var_series: pd.Series
     ) -> float:
         """
         Variance estimator for population totals under stratified sampling.
@@ -271,7 +271,7 @@ def stehman2014(
     def eq28(
         R_ratio: float,
         X_est: float,
-        Nh_dict: Dict[Any, float],
+        Nh_dict: dict[Any, float],
         nh_series: pd.Series,
         vary_series: pd.Series,
         varx_series: pd.Series,
@@ -343,7 +343,7 @@ def stehman2014(
         yu_r_cols.append(col_name)
 
     # yu for proportion of area with map class i and reference class j (eq 16)
-    yu_m_r_cols: Dict[Any, Dict[Any, str]] = {}  # Store column names for matrix
+    yu_m_r_cols: dict[Any, dict[Any, str]] = {}  # Store column names for matrix
     for i, map_class in enumerate(map_classes):
         yu_m_r_cols[map_class] = {}
         for j, ref_class in enumerate(ref_classes):
@@ -621,11 +621,11 @@ def stehman2014(
 
 
 def olofsson(
-    r: Union[List[Any], pd.Series],
-    m: Union[List[Any], pd.Series],
-    Nh: Dict[Any, Union[int, float]],
+    r: list[Any] | pd.Series,
+    m: list[Any] | pd.Series,
+    Nh: dict[Any, int | float],
     margins: bool = True,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Estimate thematic map accuracy and area using stratified sampling where
     map classes serve as sampling strata.
@@ -754,11 +754,11 @@ def olofsson(
         raise ValueError(
             "Nh must be a dictionary with map class labels as keys and areas as values."
         )
-    if not all(isinstance(k, (str, int, float)) for k in Nh.keys()):
+    if not all(isinstance(k, str | int | float) for k in Nh.keys()):
         raise ValueError(
             "Nh keys (map class labels) must be valid labels (str, int, or float)."
         )
-    if not all(isinstance(v, (int, float)) and v >= 0 for v in Nh.values()):
+    if not all(isinstance(v, int | float) and v >= 0 for v in Nh.values()):
         raise ValueError("Nh values (map stratum areas) must be non-negative numbers.")
     if len(Nh) != len(set(Nh.keys())):
         raise ValueError(
