@@ -1,6 +1,6 @@
 # PyMapAccuracy
 
-[![Python](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 PyMapAccuracy is a Python package for thematic map accuracy assessment and area estimation under stratified random sampling. It provides statistically sound implementations of accuracy estimators for remote sensing and land cover mapping applications. PyMapAccuracy is inspired by and based on the R package [**mapaccuracy**](https://cran.r-project.org/web/packages/mapaccuracy/index.html) developed by Hugo Costa.
@@ -113,7 +113,7 @@ Both estimators return a comprehensive dictionary containing:
 
 ## 📋 Requirements
 
-- Python 3.8+
+- Python 3.10+
 - pandas >= 1.3.0
 - numpy >= 1.21.0
 - scipy >= 1.7.0
