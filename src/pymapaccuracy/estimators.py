@@ -474,8 +474,8 @@ def stehman2014(
 
     for h, group_df in sample.groupby("s", observed=False):
         if len(group_df) < 2:  # Covariance is NaN for < 2 samples
-            cov_U_dict[h] = {i: 0.0 for i in range(n_map_classes)}
-            cov_P_dict[h] = {j: 0.0 for j in range(n_ref_classes)}
+            cov_U_dict[h] = dict.fromkeys(range(n_map_classes), 0.0)
+            cov_P_dict[h] = dict.fromkeys(range(n_ref_classes), 0.0)
             continue
 
         cov_U_dict[h] = {}
