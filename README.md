@@ -71,7 +71,7 @@ print(f"Confusion Matrix:\n{results['matrix']}")
 #### Olofsson Estimator (Map Classes = Strata)
 
 ```python
-from pymapaccuracy.estimators import olofsson
+from pymapaccuracy import olofsson
 
 # Example: Map classes serve as sampling strata
 reference = ['forest', 'forest', 'water', 'grassland', 'urban', 'forest']
