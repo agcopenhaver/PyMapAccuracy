@@ -7,13 +7,11 @@ PyMapAccuracy is a Python package for thematic map accuracy assessment and area 
 
 ##  Key Features
 
-- **Comprehensive Accuracy Metrics**: Overall accuracy, user's accuracy, producer's accuracy, and area proportions
+- **Comprehensive Accuracy Metrics**: Overall accuracy, user's accuracy, producer's accuracy, area proportions, and standard errors
 - **Statistical Rigor**: Standard error estimates and confidence intervals for all metrics
-- **Flexible Sampling Designs**: Support for stratified random sampling where strata differ from map classes
 - **Two Estimator Methods**:
   - **Stehman (2014)**: When sampling strata differ from map classes
   - **Olofsson et al. (2014)**: When map classes serve as sampling strata
-- **Robust Input Validation**: Comprehensive error checking with informative messages
 
 ## Statistical Methods
 
@@ -89,26 +87,48 @@ results = olofsson(reference, map_pred, map_areas)
 print(f"Overall Accuracy: {results['OA']:.3f} ± {results['SEoa']:.3f}")
 ```
 
-## 📈 Output Structure
+## Output Structure
 
 Both estimators return a comprehensive dictionary containing:
 
 ```python
-{
-    'OA': float,              # Overall accuracy
-    'UA': pd.Series,          # User's accuracy by map class
-    'PA': pd.Series,          # Producer's accuracy by reference class
-    'area': pd.Series,        # Area proportion by reference class
-    'SEoa': float,            # Standard error of overall accuracy
-    'SEua': pd.Series,        # Standard error of user's accuracy
-    'SEpa': pd.Series,        # Standard error of producer's accuracy
-    'SEa': pd.Series,         # Standard error of area estimates
-    'matrix': pd.DataFrame,   # Area-weighted confusion matrix
-    'CI_oa': tuple,          # 95% confidence interval for OA
-    'CI_ua': pd.Series,      # 95% confidence intervals for UA
-    'CI_pa': pd.Series,      # 95% confidence intervals for PA
-    'CI_area': pd.Series     # 95% confidence intervals for area
-}
+dict
+    Comprehensive results dictionary containing:
+
+    - 'OA' : float
+        Overall accuracy (proportion of correctly classified units)
+    - 'UA' : pd.Series
+        User's accuracy by map class (complement of commission error)
+    - 'PA' : pd.Series
+        Producer's accuracy by reference class (complement of omission error)
+    - 'area' : pd.Series
+        Estimated area proportion by reference class
+    - 'SEoa' : float
+        Standard error of overall accuracy
+    - 'SEua' : pd.Series
+        Standard errors of user's accuracies
+    - 'SEpa' : pd.Series
+        Standard errors of producer's accuracies
+    - 'SEa' : pd.Series
+        Standard errors of area estimates
+    - 'CIoa' : tuple
+        95% confidence interval for overall accuracy (lower, upper)
+    - 'CIua' : tuple
+        95% confidence intervals for user's accuracies (lower_series, upper_series)
+    - 'CIpa' : tuple
+        95% confidence intervals for producer's accuracies (lower_series, upper_series)
+    - 'CIa' : tuple
+        95% confidence intervals for area estimates (lower_series, upper_series)
+    - 'CI_halfwidth_oa' : float
+        Half-width of confidence interval for overall accuracy
+    - 'CI_halfwidth_ua' : pd.Series
+        Half-widths of confidence intervals for user's accuracies
+    - 'CI_halfwidth_pa' : pd.Series
+        Half-widths of confidence intervals for producer's accuracies
+    - 'CI_halfwidth_a' : pd.Series
+        Half-widths of confidence intervals for area estimates
+    - 'matrix' : pd.DataFrame
+        Area-weighted error matrix (rows=map classes, columns=reference classes)
 ```
 
 ## 📋 Requirements
@@ -138,8 +158,6 @@ pytest tests/test_stehman2014.py -v
 - Coming soon.
 
 ##  Contributing
-
-## Contributing
 
 Contributions to **PyMapAccuracy** are welcome. To contribute, please follow these steps:
 
