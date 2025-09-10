@@ -29,7 +29,7 @@ This package implements the estimators described in the following references:
 ### Installation
 
 ```bash
-pip install pymapaccuracy
+pip install git+https://github.com/agcopenhaver/PyMapAccuracy.git
 ```
 
 For development installation:
