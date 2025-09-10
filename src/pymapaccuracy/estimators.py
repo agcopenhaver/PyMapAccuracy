@@ -357,7 +357,7 @@ def stehman2014(
     OA = eq2("yu_O")
 
     Area_list = [eq2(f"yu_r{j}") for j in range(n_ref_classes)]
-    Area = pd.Series(Area_list, index=ref_classes, name="Area")
+    Area = pd.Series(Area_list, index=ref_classes, name="area")
 
     M_matrix = np.full((n_map_classes, n_ref_classes), np.nan)
     for i, map_class in enumerate(map_classes):
@@ -392,7 +392,7 @@ def stehman2014(
         eq25(Nh_strata_filt, nh_series, tvar[f"yu_r{j}"]) for j in range(n_ref_classes)
     ]
     SEa = pd.Series(
-        np.sqrt(np.maximum(Va_list, 0)), index=ref_classes, name="SE_Area"
+        np.sqrt(np.maximum(Va_list, 0)), index=ref_classes, name="SEa"
     )  # Use maximum to avoid sqrt(<0)
 
     # SE for Matrix Cells (Optional, not explicitly returned but calculated in R code)
@@ -538,7 +538,7 @@ def stehman2014(
         )
         Vua_list.append(Vua)
     SEua = pd.Series(
-        np.sqrt(np.maximum(Vua_list, 0)), index=map_classes, name="SE_UA"
+        np.sqrt(np.maximum(Vua_list, 0)), index=map_classes, name="SEua"
     )  # Use maximum to avoid sqrt(<0)
 
     # SE for Producer's Accuracy (PA) using eq28
@@ -565,7 +565,7 @@ def stehman2014(
         )
         Vpa_list.append(Vpa)
     SEpa = pd.Series(
-        np.sqrt(np.maximum(Vpa_list, 0)), index=ref_classes, name="SE_PA"
+        np.sqrt(np.maximum(Vpa_list, 0)), index=ref_classes, name="SEpa"
     )  # Use maximum to avoid sqrt(<0)
 
     # --- Final Output Preparation ---
@@ -589,9 +589,9 @@ def stehman2014(
 
     # Confidence Interval half-widths
     CI_halfwidth_oa = z_alpha * SEoa
-    CI_halfwidth_ua = z_alpha * SEua
-    CI_halfwidth_pa = z_alpha * SEpa
-    CI_halfwidth_a = z_alpha * SEa
+    CI_halfwidth_ua = pd.Series(z_alpha * SEua, index=map_classes, name="CI_halfwidth_ua")
+    CI_halfwidth_pa = pd.Series(z_alpha * SEpa, index=ref_classes, name="CI_halfwidth_pa")
+    CI_halfwidth_a = pd.Series(z_alpha * SEa, index=ref_classes, name="CI_halfwidth_a")
 
     # Confidence Intervals (lower, upper)
     OA_CI = (OA - CI_halfwidth_oa, OA + CI_halfwidth_oa)
@@ -792,7 +792,7 @@ def olofsson(
     ref_classes_unique = r.unique()
     extra_ref_classes = list(set(ref_classes_unique) - set(map_classes_nh))
     class_order = map_classes_nh + extra_ref_classes
-    print("class order ", class_order)
+
 
     # Issue warnings for data mismatches (but don't alter behavior)
     if extra_ref_classes:
@@ -926,7 +926,7 @@ def olofsson(
     # var_ua_terms = UA * (1 - UA) / (nh - 1) # R code version
     var_ua_terms = ua_for_var * (1 - ua_for_var) / (nh_safe - 1)
     VAR_UA = var_ua_terms.fillna(0)  # If nh<=1, variance is 0/inf -> 0
-    SEua = pd.Series(np.sqrt(np.maximum(VAR_UA, 0)), index=map_classes_nh, name="SE_UA")
+    SEua = pd.Series(np.sqrt(np.maximum(VAR_UA, 0)), index=map_classes_nh, name="SEua")
 
     # Standard Error of Area
     # VAR_A_j = sum_i [ Wh_i^2 * (p_ij_stratum * (1 - p_ij_stratum)) / (nh_i - 1) ]
@@ -940,7 +940,7 @@ def olofsson(
     VAR_A = term_var_a.sum(axis=0).reindex(
         class_order, fill_value=0
     )  # Sum over strata (i) for each ref class (j)
-    SEa = pd.Series(np.sqrt(np.maximum(VAR_A, 0)), index=class_order, name="SE_Area")
+    SEa = pd.Series(np.sqrt(np.maximum(VAR_A, 0)), index=class_order, name="SEa")
 
     # Standard Error of PA (Robust implementation using delta method) #TODO: This is a  variation from the original paper added because indexing required complex logic that was error-prone
     # VAR_PA_j = (1 / Area_j^2) * sum_i [ Wh_i^2 * var_component_i_j / (nh_i - 1) ]
@@ -991,7 +991,7 @@ def olofsson(
 
         VAR_PA[j_class] = variance_sum / (area_j**2) if area_j > 0 else 0
 
-    SEpa = pd.Series(np.sqrt(np.maximum(VAR_PA, 0)), index=class_order, name="SE_PA")
+    SEpa = pd.Series(np.sqrt(np.maximum(VAR_PA, 0)), index=class_order, name="SEpa")
 
     # add in two sided confidence intervals for OA, UA, PA, Area
     # Note: R code uses qnorm(0.975) for 95% CI, but we can use scipy.stats.norm.ppf(0.975)
@@ -1002,8 +1002,10 @@ def olofsson(
     CI_halfwidth_ua = pd.Series(
         z_alpha * SEua, index=SEua.index, name="CI_halfwidth_ua"
     )
-    CI_halfwidth_pa = z_alpha * SEpa
-    CI_halfwidth_a = z_alpha * SEa
+    CI_halfwidth_pa = pd.Series(
+        z_alpha * SEpa, index=SEpa.index, name="CI_halfwidth_pa"
+    )
+    CI_halfwidth_a = pd.Series(z_alpha * SEa, index=SEa.index, name="CI_halfwidth_a")
 
     # Confidence Intervals (lower, upper)
     OA_CI = (OA - CI_halfwidth_oa, OA + CI_halfwidth_oa)

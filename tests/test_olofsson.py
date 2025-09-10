@@ -29,10 +29,10 @@ def test_olofsson_example1_2013():
     result = olofsson(r, m, Nh)
 
     # print(result['SEoa'], result['CIoa'])  # Debugging output
-    print(result["area"])  # Debugging output
-    print(result["SEa"])  # Debugging output
+    # print(result["area"])  # Debugging output
+    # print(result["SEa"])  # Debugging output
 
-    print(result["CIa"])  # Debugging output
+    # print(result["CIa"])  # Debugging output
 
     # Compare to paper values (allowing for minor floating point differences) - note that there are issues with rounding in the original paper, so values here do not match exactly
     # Area
@@ -46,8 +46,9 @@ def test_olofsson_example1_2013():
     se_area1_pixels = result["SEa"]["1"] * total_area_pixels
     assert se_area1_pixels == pytest.approx(10751.88, abs=1)  # eq. 12 (pixels)
     # CI Area (Note: Paper has typo in lower bound calculation)
-    ci_lower = (result["area"]["1"] * total_area_pixels) - Z_95 * se_area1_pixels
-    ci_upper = (result["area"]["1"] * total_area_pixels) + Z_95 * se_area1_pixels
+    ci_lower = result["CIa"][0]['1'] * total_area_pixels
+
+    ci_upper = result["CIa"][1]['1'] * total_area_pixels
     assert ci_lower == pytest.approx(
         45112.4 - 21072.37, abs=2
     )  # Using paper's CI width / 2
@@ -66,10 +67,10 @@ def test_olofsson_example1_2013():
         [0.4806308, 0.9941887, 0.8969259], index=["1", "2", "3"], name="PA"
     )
     expected_se_ua_ci = pd.Series(
-        [0.03360292, 0.02892031, 0.03360292], index=["1", "2", "3"], name="SE_UA"
+        [0.03360292, 0.02892031, 0.03360292], index=["1", "2", "3"], name="CI_halfwidth_ua"
     )  # CI half-width / Z_95
     expected_se_pa_ci = pd.Series(
-        [0.22453045, 0.01132522, 0.04120541], index=["1", "2", "3"], name="SE_PA"
+        [0.22453045, 0.01132522, 0.04120541], index=["1", "2", "3"], name="CI_halfwidth_pa"
     )  # CI half-width / Z_95
 
     assert_series_equal(
@@ -79,11 +80,12 @@ def test_olofsson_example1_2013():
         result["PA"].dropna(), expected_pa, check_exact=False, rtol=1e-5
     )
     # Compare SE * Z_95
+    print(result["CIpa"])
     assert_series_equal(
-        result["SEua"].dropna() * Z_95, expected_se_ua_ci, check_exact=False, rtol=1e-5
+        result["CI_halfwidth_ua"], expected_se_ua_ci, check_exact=False, rtol=1e-5
     )  # Allow slightly larger tolerance for SE
     assert_series_equal(
-        result["SEpa"].dropna() * Z_95, expected_se_pa_ci, check_exact=False, rtol=1e-5
+        result["CI_halfwidth_pa"], expected_se_pa_ci, check_exact=False, rtol=1e-5
     )  # Allow slightly larger tolerance for SE
 
     # Check matrix structure (optional, focus on values)
@@ -112,7 +114,7 @@ def test_olofsson_example2_2013():
 
     # Compare to Table 6 values
     assert result["OA"] == pytest.approx(0.96, abs=1e-2)
-    assert result["SEoa"] * Z_95 == pytest.approx(0.01, abs=1e-2)  # CI half-width
+    assert result["CI_halfwidth_oa"] == pytest.approx(0.01, abs=1e-2)  # CI half-width
 
     expected_ua = pd.Series(
         [0.51417, 0.94428, 0.97297], index=["1", "2", "3"], name="UA"
@@ -121,10 +123,10 @@ def test_olofsson_example2_2013():
         [0.67535, 0.93072, 0.97664], index=["1", "2", "3"], name="PA"
     )
     expected_se_ua_ci_hw = pd.Series(
-        [0.06246, 0.02438, 0.01350], index=["1", "2", "3"], name="SE_UA"
+        [0.06246, 0.02438, 0.01350], index=["1", "2", "3"], name="CI_halfwidth_ua"
     )  # CI half-width
     expected_se_pa_ci_hw = pd.Series(
-        [0.30458, 0.02938, 0.00960], index=["1", "2", "3"], name="SE_PA"
+        [0.30458, 0.02938, 0.00960], index=["1", "2", "3"], name="CI_halfwidth_pa"
     )  # CI half-width
 
     assert_series_equal(
@@ -134,13 +136,13 @@ def test_olofsson_example2_2013():
         result["PA"].dropna(), expected_pa, check_exact=False, rtol=1e-2
     )
     assert_series_equal(
-        result["SEua"].dropna() * Z_95,
+        result["CI_halfwidth_ua"].dropna(),
         expected_se_ua_ci_hw,
         check_exact=False,
         rtol=1e-2,
     )
     assert_series_equal(
-        result["SEpa"].dropna() * Z_95,
+        result["CI_halfwidth_pa"].dropna(),
         expected_se_pa_ci_hw,
         check_exact=False,
         rtol=1e-2,
@@ -199,16 +201,16 @@ def test_olofsson_table8_2014():
     expected_se_ua_ci_hw = pd.Series(
         [0.07403962, 0.10075516, 0.03974464, 0.02053312],
         index=class_order,
-        name="SE_UA",
+        name="CI_halfwidth_ua",
     )  # CI half-width
     expected_se_pa_ci_hw = pd.Series(
         [0.21330593, 0.25440369, 0.03432379, 0.01836120],
         index=class_order,
-        name="SE_PA",
+        name="CI_halfwidth_pa",
     )  # CI half-width
 
     assert result["OA"] == pytest.approx(0.9465119, abs=1e-3)
-    assert result["SEoa"] * Z_95 == pytest.approx(0.01848328, abs=1e-5)
+    assert result["CI_halfwidth_oa"] == pytest.approx(0.01848328, abs=1e-5)
 
     assert_series_equal(
         result["UA"].reindex(class_order), expected_ua, check_exact=False, rtol=1e-5
@@ -217,13 +219,13 @@ def test_olofsson_table8_2014():
         result["PA"].reindex(class_order), expected_pa, check_exact=False, rtol=1e-5
     )
     assert_series_equal(
-        result["SEua"].reindex(class_order) * Z_95,
+        result["CI_halfwidth_ua"].reindex(class_order),
         expected_se_ua_ci_hw,
         check_exact=False,
         rtol=1e-5,
     )
     assert_series_equal(
-        result["SEpa"].reindex(class_order) * Z_95,
+        result["CI_halfwidth_pa"].reindex(class_order),
         expected_se_pa_ci_hw,
         check_exact=False,
         rtol=1e-5,
@@ -232,7 +234,7 @@ def test_olofsson_table8_2014():
     # Compare area estimates in hectares (right-hand side p. 54)
     area_ha = result["area"].reindex(class_order) * total_area_ha
     se_area_ha = result["SEa"].reindex(class_order) * total_area_ha
-    ci_hw_area_ha = se_area_ha * Z_95
+    ci_hw_area_ha = result["CI_halfwidth_a"].reindex(class_order) * total_area_ha
 
     assert area_ha["Deforestation"] == pytest.approx(21157.76, abs=0.1)  # x10^4 ha
     assert ci_hw_area_ha["Deforestation"] == pytest.approx(6157.521, abs=0.1)

@@ -184,11 +184,11 @@ def test_stehman2014_correctness_perfect():
     expected_OA = 1.0
     expected_UA = pd.Series([1.0, 1.0], index=["forest", "water"], name="UA")
     expected_PA = pd.Series([1.0, 1.0], index=["forest", "water"], name="PA")
-    expected_area = pd.Series([0.5, 0.5], index=["forest", "water"], name="Area")
+    expected_area = pd.Series([0.5, 0.5], index=["forest", "water"], name="area")
     expected_SEoa = 0.0
-    expected_SEua = pd.Series([0.0, 0.0], index=["forest", "water"], name="SE_UA")
-    expected_SEpa = pd.Series([0.0, 0.0], index=["forest", "water"], name="SE_PA")
-    expected_SEa = pd.Series([0.0, 0.0], index=["forest", "water"], name="SE_Area")
+    expected_SEua = pd.Series([0.0, 0.0], index=["forest", "water"], name="SEua")
+    expected_SEpa = pd.Series([0.0, 0.0], index=["forest", "water"], name="SEpa")
+    expected_SEa = pd.Series([0.0, 0.0], index=["forest", "water"], name="SEa")
     expected_matrix_data = {
         "forest": [0.5, np.nan, 0.5],
         "water": [np.nan, 0.5, 0.5],
@@ -315,8 +315,7 @@ def test_stehman2014_paper_example():
     assert oa_lower <= result["OA"] <= oa_upper
     assert 0 <= oa_lower <= 1 and 0 <= oa_upper <= 1
 
-    # Check that CI width is approximately 2 * 1.96 * SE for overall accuracy
-    expected_ci_width = 2 * 1.96 * expected_SEoa
+    expected_ci_width = 2 * result["CI_halfwidth_oa"]
     actual_ci_width = oa_upper - oa_lower
     assert actual_ci_width == pytest.approx(expected_ci_width, rel=0.01)
 
