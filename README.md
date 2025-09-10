@@ -29,7 +29,7 @@ This package implements the estimators described in the following references:
 ### Installation
 
 ```bash
-pip install git+https://github.com/agcopenhaver/PyMapAccuracy.git
+pip install pymapaccuracy
 ```
 
 For development installation:
@@ -91,45 +91,26 @@ print(f"Overall Accuracy: {results['OA']:.3f} ± {results['SEoa']:.3f}")
 
 Both estimators return a comprehensive dictionary containing:
 
-```python
-dict
-    Comprehensive results dictionary containing:
+| Key                | Type        | Description |
+|---------------------|-------------|-------------|
+| `OA`               | float       | Overall accuracy (proportion of correctly classified units) |
+| `UA`               | pd.Series   | User's accuracy by map class (complement of commission error) |
+| `PA`               | pd.Series   | Producer's accuracy by reference class (complement of omission error) |
+| `area`             | pd.Series   | Estimated area proportion by reference class |
+| `SEoa`             | float       | Standard error of overall accuracy |
+| `SEua`             | pd.Series   | Standard errors of user's accuracies |
+| `SEpa`             | pd.Series   | Standard errors of producer's accuracies |
+| `SEa`              | pd.Series   | Standard errors of area estimates |
+| `CIoa`             | tuple       | 95% confidence interval for overall accuracy *(lower, upper)* |
+| `CIua`             | tuple       | 95% confidence intervals for user's accuracies *(lower_series, upper_series)* |
+| `CIpa`             | tuple       | 95% confidence intervals for producer's accuracies *(lower_series, upper_series)* |
+| `CIa`              | tuple       | 95% confidence intervals for area estimates *(lower_series, upper_series)* |
+| `CI_halfwidth_oa`  | float       | Half-width of confidence interval for overall accuracy |
+| `CI_halfwidth_ua`  | pd.Series   | Half-widths of confidence intervals for user's accuracies |
+| `CI_halfwidth_pa`  | pd.Series   | Half-widths of confidence intervals for producer's accuracies |
+| `CI_halfwidth_a`   | pd.Series   | Half-widths of confidence intervals for area estimates |
+| `matrix`           | pd.DataFrame| Area-weighted error matrix *(rows=map classes, columns=reference classes)* |
 
-    - 'OA' : float
-        Overall accuracy (proportion of correctly classified units)
-    - 'UA' : pd.Series
-        User's accuracy by map class (complement of commission error)
-    - 'PA' : pd.Series
-        Producer's accuracy by reference class (complement of omission error)
-    - 'area' : pd.Series
-        Estimated area proportion by reference class
-    - 'SEoa' : float
-        Standard error of overall accuracy
-    - 'SEua' : pd.Series
-        Standard errors of user's accuracies
-    - 'SEpa' : pd.Series
-        Standard errors of producer's accuracies
-    - 'SEa' : pd.Series
-        Standard errors of area estimates
-    - 'CIoa' : tuple
-        95% confidence interval for overall accuracy (lower, upper)
-    - 'CIua' : tuple
-        95% confidence intervals for user's accuracies (lower_series, upper_series)
-    - 'CIpa' : tuple
-        95% confidence intervals for producer's accuracies (lower_series, upper_series)
-    - 'CIa' : tuple
-        95% confidence intervals for area estimates (lower_series, upper_series)
-    - 'CI_halfwidth_oa' : float
-        Half-width of confidence interval for overall accuracy
-    - 'CI_halfwidth_ua' : pd.Series
-        Half-widths of confidence intervals for user's accuracies
-    - 'CI_halfwidth_pa' : pd.Series
-        Half-widths of confidence intervals for producer's accuracies
-    - 'CI_halfwidth_a' : pd.Series
-        Half-widths of confidence intervals for area estimates
-    - 'matrix' : pd.DataFrame
-        Area-weighted error matrix (rows=map classes, columns=reference classes)
-```
 
 ## 📋 Requirements
 
