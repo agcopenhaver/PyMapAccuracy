@@ -589,8 +589,12 @@ def stehman2014(
 
     # Confidence Interval half-widths
     CI_halfwidth_oa = z_alpha * SEoa
-    CI_halfwidth_ua = pd.Series(z_alpha * SEua, index=map_classes, name="CI_halfwidth_ua")
-    CI_halfwidth_pa = pd.Series(z_alpha * SEpa, index=ref_classes, name="CI_halfwidth_pa")
+    CI_halfwidth_ua = pd.Series(
+        z_alpha * SEua, index=map_classes, name="CI_halfwidth_ua"
+    )
+    CI_halfwidth_pa = pd.Series(
+        z_alpha * SEpa, index=ref_classes, name="CI_halfwidth_pa"
+    )
     CI_halfwidth_a = pd.Series(z_alpha * SEa, index=ref_classes, name="CI_halfwidth_a")
 
     # Confidence Intervals (lower, upper)
@@ -792,7 +796,6 @@ def olofsson(
     ref_classes_unique = r.unique()
     extra_ref_classes = list(set(ref_classes_unique) - set(map_classes_nh))
     class_order = map_classes_nh + extra_ref_classes
-
 
     # Issue warnings for data mismatches (but don't alter behavior)
     if extra_ref_classes:

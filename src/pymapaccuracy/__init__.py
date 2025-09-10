@@ -1,7 +1,7 @@
 """
 PyMapAccuracy: Thematic Map Accuracy Assessment Package
 
-A Python package for thematic map accuracy assessment and area estimation 
+A Python package for thematic map accuracy assessment and area estimation
 under stratified random sampling.
 """
 

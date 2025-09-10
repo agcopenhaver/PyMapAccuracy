@@ -46,9 +46,9 @@ def test_olofsson_example1_2013():
     se_area1_pixels = result["SEa"]["1"] * total_area_pixels
     assert se_area1_pixels == pytest.approx(10751.88, abs=1)  # eq. 12 (pixels)
     # CI Area (Note: Paper has typo in lower bound calculation)
-    ci_lower = result["CIa"][0]['1'] * total_area_pixels
+    ci_lower = result["CIa"][0]["1"] * total_area_pixels
 
-    ci_upper = result["CIa"][1]['1'] * total_area_pixels
+    ci_upper = result["CIa"][1]["1"] * total_area_pixels
     assert ci_lower == pytest.approx(
         45112.4 - 21072.37, abs=2
     )  # Using paper's CI width / 2
@@ -67,10 +67,14 @@ def test_olofsson_example1_2013():
         [0.4806308, 0.9941887, 0.8969259], index=["1", "2", "3"], name="PA"
     )
     expected_se_ua_ci = pd.Series(
-        [0.03360292, 0.02892031, 0.03360292], index=["1", "2", "3"], name="CI_halfwidth_ua"
+        [0.03360292, 0.02892031, 0.03360292],
+        index=["1", "2", "3"],
+        name="CI_halfwidth_ua",
     )  # CI half-width / Z_95
     expected_se_pa_ci = pd.Series(
-        [0.22453045, 0.01132522, 0.04120541], index=["1", "2", "3"], name="CI_halfwidth_pa"
+        [0.22453045, 0.01132522, 0.04120541],
+        index=["1", "2", "3"],
+        name="CI_halfwidth_pa",
     )  # CI half-width / Z_95
 
     assert_series_equal(
@@ -233,7 +237,6 @@ def test_olofsson_table8_2014():
 
     # Compare area estimates in hectares (right-hand side p. 54)
     area_ha = result["area"].reindex(class_order) * total_area_ha
-    se_area_ha = result["SEa"].reindex(class_order) * total_area_ha
     ci_hw_area_ha = result["CI_halfwidth_a"].reindex(class_order) * total_area_ha
 
     assert area_ha["Deforestation"] == pytest.approx(21157.76, abs=0.1)  # x10^4 ha
